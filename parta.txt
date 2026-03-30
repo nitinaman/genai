@@ -1,0 +1,105 @@
+#1)
+from diffusers import StableDiffusionPipeline 
+import torch 
+ 
+# Load model 
+pipe = StableDiffusionPipeline.from_pretrained( 
+    "runwayml/stable-diffusion-v1-5", 
+     torch_dtype=torch.float16 
+).to("cpu")   # use "cpu" if no GPU 
+ 
+# Input prompt 
+prompt = input("Enter prompt: ") 
+ 
+# Generate image 
+image = pipe(prompt).images[0] 
+ 
+# Save and show 
+image.save("output.png") 
+image.show() 
+ 
+print("Image saved as output.png") 
+
+#2)
+from diffusers import StableDiffusionPipeline
+import torch
+b_m="runwayml/stable-diffusion-v1-5"
+pipe=StableDiffusionPipeline.from_pretrained(b_m,torch_dtype=torch.float32).to("cpu")
+
+l_m="latent-consistency/lcm-lora-sdv1-5"
+pipe.load_lora_weights(l_m)
+
+pipe.fuse_lora()
+
+prompt="A ratina disease in medical field with blood vesels, with high resolution"
+
+
+image=pipe(prompt).images[0]
+image.show()
+
+#3)
+from transformers import pipeline
+qa_pipeline= pipeline("question-answering")
+
+def ask_question(context,question):
+    result=qa_pipeline(question=question,context=context)
+    return result['answer']
+context = """ 
+AI is a simmulation of human brain.
+Ai is used widely in today in multiple fields such as hospital,agriculture,robotics,
+its mainly focus on automate the human work without much interfare of human.
+
+
+""" 
+question=input("enter your question")
+answer=ask_question(context,question)
+print("answer:",answer)
+
+#4)
+from transformers import pipeline
+
+summarizer = pipeline("summarization" , model = "facebook/bart-large-cnn")
+
+context = input("Enter the paragraph:\n")
+summary = summarizer(context, max_length = 25,min_length = 20, do_sample = False)[0]['summary_text']
+print(f"\nSummary: {summary}")
+
+#5)
+from transformers import pipeline 
+ 
+generator = pipeline("text-generation", model="gpt2") 
+ 
+prompt = input("Enter incomplete prompt:\n") 
+ 
+result = generator(prompt, max_length=50, num_return_sequences=1)[0]['generated_text']
+ 
+print("\nCompleted Text:\n", result) 
+
+# 6)
+from transformers import pipeline
+
+generator = pipeline("text-generation", model="gpt2")
+
+prompt = """
+You are an expert AI researcher.
+
+Write a short article on "Applications of Generative AI in Healthcare".
+
+Include:
+1. Introduction
+2. Key applications (at least 3)
+3. Benefits
+4. Conclusion
+
+Keep the explanation clear and concise.
+"""
+
+result = generator(prompt,
+                   max_length=100,
+                   num_return_sequences=1)[0]['generated_text']
+
+print("\n=== Engineered Prompt ===\n")
+print(prompt)
+
+print("\n=== Generated Article ===\n")
+print(result)
