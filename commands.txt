@@ -1,8 +1,0 @@
-1) 
-!pip install diffusers transformers accelerate torch pillow matplotlib
-
-2)
-!pip install transformers torch
-
-3)
-!pip install transformers datasets torch
